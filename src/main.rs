@@ -24,7 +24,7 @@ fn main() {
 
         if decision == "N" || decision == "n" {
             println!("Oh, that's sad :( Now I will kill my self");
-            process::exit(0x0100)
+            end_the_game()
         }
 
         if decision == "Y" || decision == "y" {
@@ -91,12 +91,14 @@ fn ask_for_word() {
 fn play_game(word: String) {
 
     let mut word_to_fill = get_word_to_fill(&word);
+    let mut wrong_count: u16 = 0;
 
     println!("To all other players, this is the empty word you have to guess the letters: \n");
 
     loop {
         println!("{} \n", word_to_fill);
 
+        if !word_to_fill.contains('_') { break }
 
         println!("Player, please guess a letter: \n");
 
@@ -115,21 +117,13 @@ fn play_game(word: String) {
             word_to_fill = get_new_word_to_fill(word_to_fill, letter.chars().nth(0).unwrap(), &indices);
 
             println!("Congrats, you have found one letter");
-            println!("New word: {}", word_to_fill);
+            continue
         }
+
+        wrong_count += 1;
+        println!("Sorry, but the letter '{}' isn't part of the word :(", letter);
+        print_hangman(&wrong_count, &word);
     }
-
-
-
- //    println!("      _______
- //     |/      |
- //     |      (_)
- //     |      \\|/
- //     |       |
- //     |      / \\
- //     |
- // ____|____")
-
 }
 
 fn get_word_to_fill(word: &String) -> String {
@@ -176,11 +170,169 @@ fn get_new_word_to_fill(word_to_fill: String, letter: char, indices: &Vec<usize>
 
         let mut word_to_fill_as_string: String = new_word_to_fill.into_iter().collect();
 
-        println!("new word to fill: {:?}", word_to_fill_as_string);
-        println!("got: {:?}", got);
-
         new_word_to_fill1 = word_to_fill_as_string;
     }
 
     new_word_to_fill1
+}
+
+fn print_hangman(wrong_counter: &u16, word: &String) {
+
+    match wrong_counter {
+        1 => {
+            println!("######################
+#                    #
+#                    #
+#                    #
+#                    #
+#                    #
+#                    #
+#                    #
+#  _________         #
+#                    #
+######################\n");
+        },
+        2 => {
+            println!("######################
+#                    #
+#      |             #
+#      |             #
+#      |             #
+#      |             #
+#      |             #
+#      |             #
+#  ____|____         #
+#                    #
+######################\n");
+        },
+        3 => {
+            println!("######################
+#      _________     #
+#      |             #
+#      |             #
+#      |             #
+#      |             #
+#      |             #
+#      |             #
+#  ____|____         #
+#                    #
+######################\n");
+        },
+        4 => {
+            println!("######################
+#      _________     #
+#      |/            #
+#      |             #
+#      |             #
+#      |             #
+#      |             #
+#      |             #
+#  ____|____         #
+#                    #
+######################\n");
+        },
+        5 => {
+            println!("######################
+#      _________     #
+#      |/      |     #
+#      |             #
+#      |             #
+#      |             #
+#      |             #
+#      |             #
+#  ____|____         #
+#                    #
+######################\n");
+        },
+        6 => {
+            println!("######################
+#      _________     #
+#      |/      |     #
+#      |     (°_°)   #
+#      |             #
+#      |             #
+#      |             #
+#      |             #
+#  ____|____         #
+#                    #
+######################\n");
+        },
+        7 => {
+            println!("######################
+#      _________     #
+#      |/      |     #
+#      |     (°_°)   #
+#      |       |     #
+#      |       |     #
+#      |             #
+#      |             #
+#  ____|____         #
+#                    #
+######################\n");
+        },
+        8 => {
+            println!("######################
+#      _________     #
+#      |/      |     #
+#      |     (°_°)   #
+#      |       |/    #
+#      |       |     #
+#      |             #
+#      |             #
+#  ____|____         #
+#                    #
+######################\n");
+        },
+        9 => {
+            println!("######################
+#      _________     #
+#      |/      |     #
+#      |     (°_°)   #
+#      |      \\|/    #
+#      |       |     #
+#      |             #
+#      |             #
+#  ____|____         #
+#                    #
+######################\n");
+        },
+        10 => {
+            println!("######################
+#      _________     #
+#      |/      |     #
+#      |     (°_°)   #
+#      |      \\|/    #
+#      |       |     #
+#      |      /      #
+#      |             #
+#  ____|____         #
+#                    #
+######################\n");
+        },
+        11 => {
+            println!("######################
+#      _________     #
+#      |/      |     #
+#      |     (°_°)   #
+#      |      \\|/    #
+#      |       |     #
+#      |      / \\    #
+#      |             #
+#  ____|____         #
+#                    #
+######################\n");
+            println!("YOU LOST :(");
+            println!("The word was '{}'", word);
+            println!("Congrats Gamemaster, you win :)\n");
+            println!("I will now end the Game");
+            end_the_game()
+        },
+        _ => {
+
+        }
+    }
+}
+
+fn end_the_game() {
+    process::exit(0x0100)
 }

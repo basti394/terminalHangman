@@ -6,6 +6,7 @@ use std::ops::ControlFlow::Break;
 use std::process;
 use std::ptr::null;
 use ansi_term::*;
+use std::{thread, time};
 
 fn main() {
 
@@ -116,7 +117,8 @@ fn play_game(word: String) {
 
             word_to_fill = get_new_word_to_fill(word_to_fill, letter.chars().nth(0).unwrap(), &indices);
 
-            println!("Congrats, you have found one letter");
+            check_if_word_is_found(&word, &word_to_fill);
+
             continue
         }
 
@@ -137,6 +139,20 @@ fn get_word_to_fill(word: &String) -> String {
     }
 
     word_to_fill.into_iter().collect()
+}
+
+fn check_if_word_is_found(word: &String, word_to_fill: &String) {
+
+    if word.eq_ignore_ascii_case(word_to_fill) {
+        println!("Wohoo, the player found the word :)");
+        println!("The player won. \n");
+        println!("I will now end the game.");
+        thread::sleep(time::Duration::from_secs(5));
+        end_the_game();
+        return;
+    }
+
+    println!("Congrats, you have found one letter");
 }
 
 fn get_indices_of_letter(word: &String, letter: char) -> Vec<usize> {
@@ -325,6 +341,7 @@ fn print_hangman(wrong_counter: &u16, word: &String) {
             println!("The word was '{}'", word);
             println!("Congrats Gamemaster, you win :)\n");
             println!("I will now end the Game");
+            thread::sleep(time::Duration::from_secs(5));
             end_the_game()
         },
         _ => {
